@@ -1,6 +1,8 @@
 import Head from 'next/head';
 
 import styled from '@emotion/styled';
+import Layout from 'components/layout/Layout';
+import { NextPageWithLayout } from 'pages/_app';
 
 const Button = styled.button`
     padding: 32px;
@@ -14,10 +16,16 @@ const Button = styled.button`
     }
 `;
 
-export default function Home() {
+const Home: NextPageWithLayout = () => {
     return (
         <>
             <Button>수현짱~~</Button>
         </>
     );
-}
+};
+
+Home.getLayout = (page) => {
+    return <Layout>{page}</Layout>;
+};
+
+export default Home;
