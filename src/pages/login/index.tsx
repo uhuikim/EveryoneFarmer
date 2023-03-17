@@ -4,8 +4,10 @@ import { NextPageWithLayout } from 'pages/_app';
 import styled from '@emotion/styled';
 import Input from 'components/form/Input';
 import { postApi } from 'api/setup';
+import { useRouter } from 'next/router';
 
 const Login: NextPageWithLayout = () => {
+    const router = useRouter();
     const [value, setValue] = useState({ userId: '', userPw: '' });
 
     const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
@@ -13,7 +15,8 @@ const Login: NextPageWithLayout = () => {
 
         postApi('/mo/signIn', value)
             .then((res) => {
-                console.log(res);
+                if (res.data.message === 'SUCCESS') router.push('/');
+                if (res.data.message === 'FAIL_ACCESS_NO_USER_OR_PASSWORD') console.log('없는 아이디 비번');
             })
             .catch((Error) => {
                 console.log(Error);
