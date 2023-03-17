@@ -8,7 +8,7 @@ export default css`
 
     html,
     body,
-    body > div:first-child,
+    body > div:first-of-type,
     div#__next,
     div#__next > div {
         height: 100%;
