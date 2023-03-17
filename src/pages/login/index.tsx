@@ -15,7 +15,11 @@ const Login = () => {
 
         postApi('/mo/signIn', value)
             .then((res) => {
-                if (res.data.message === 'SUCCESS') router.push('/');
+                if (res.data.message === 'SUCCESS') {
+                    const access_token = res.data.data['MO-MNG-TOKEN'];
+                    localStorage.setItem('monong_access_token', access_token);
+                    router.push('/');
+                }
                 if (res.data.message === 'FAIL_ACCESS_NO_USER_OR_PASSWORD') console.log('없는 아이디 비번');
             })
             .catch((Error) => {
