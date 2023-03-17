@@ -6,7 +6,7 @@ import Input from 'components/form/Input';
 import { postApi } from 'api/setup';
 import { useRouter } from 'next/router';
 
-const Login: NextPageWithLayout = () => {
+const Login = () => {
     const router = useRouter();
     const [value, setValue] = useState({ userId: '', userPw: '' });
 
@@ -30,28 +30,38 @@ const Login: NextPageWithLayout = () => {
     };
 
     return (
-        <LoginForm onSubmit={handleLogin}>
-            <Title>모두의 농부</Title>
-            <InputWrap>
-                <Input type="text" placeholder="아이디" name="userId" onChange={handleChange} value={value.userId} />
-                <Input
-                    type="password"
-                    placeholder="비밀번호"
-                    name="userPw"
-                    onChange={handleChange}
-                    value={value.userPw}
-                />
-            </InputWrap>
-            <Button type="submit">로그인</Button>
-        </LoginForm>
+        <Container>
+            <LoginForm onSubmit={handleLogin}>
+                <Title>모두의 농부</Title>
+                <InputWrap>
+                    <Input
+                        type="text"
+                        placeholder="아이디"
+                        name="userId"
+                        onChange={handleChange}
+                        value={value.userId}
+                    />
+                    <Input
+                        type="password"
+                        placeholder="비밀번호"
+                        name="userPw"
+                        onChange={handleChange}
+                        value={value.userPw}
+                    />
+                </InputWrap>
+                <Button type="submit">로그인</Button>
+            </LoginForm>
+        </Container>
     );
 };
 
-Login.getLayout = (page) => {
-    return <Layout>{page}</Layout>;
-};
-
 export default Login;
+const Container = styled.div`
+    max-width: 375px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+`;
 
 const LoginForm = styled.form`
     display: flex;
