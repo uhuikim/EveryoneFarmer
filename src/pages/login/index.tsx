@@ -3,13 +3,21 @@ import React, { useState } from 'react';
 import { NextPageWithLayout } from 'pages/_app';
 import styled from '@emotion/styled';
 import Input from 'components/form/Input';
+import { postApi } from 'api/setup';
 
 const Login: NextPageWithLayout = () => {
     const [value, setValue] = useState({ userId: '', userPw: '' });
 
     const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('dkdkdkdkdk');
+
+        postApi('/mo/signIn', value)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((Error) => {
+                console.log(Error);
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
