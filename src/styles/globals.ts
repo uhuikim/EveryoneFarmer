@@ -13,4 +13,9 @@ export default css`
     div#__next > div {
         height: 100%;
     }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 `;

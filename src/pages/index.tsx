@@ -4,6 +4,42 @@ import styled from '@emotion/styled';
 import Layout from 'components/layout/Layout';
 import { NextPageWithLayout } from 'pages/_app';
 
+import { FaRegBell } from 'react-icons/fa';
+
+const Home: NextPageWithLayout = () => {
+    return (
+        <>
+            <Header>
+                홈
+                <button type="button">
+                    <FaRegBell size={18} />
+                </button>
+            </Header>
+            <Button>수현짱~~</Button>
+        </>
+    );
+};
+
+Home.getLayout = (page) => {
+    return <Layout>{page}</Layout>;
+};
+
+export default Home;
+
+const Header = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 10px;
+    font-weight: bold;
+
+    > button {
+        position: absolute;
+        right: 20px;
+    }
+`;
+
 const Button = styled.button`
     padding: 32px;
     background-color: hotpink;
@@ -15,17 +51,3 @@ const Button = styled.button`
         color: white;
     }
 `;
-
-const Home: NextPageWithLayout = () => {
-    return (
-        <>
-            <Button>수현짱~~</Button>
-        </>
-    );
-};
-
-Home.getLayout = (page) => {
-    return <Layout>{page}</Layout>;
-};
-
-export default Home;
