@@ -13,7 +13,5 @@ export default Layout;
 
 const Container = styled.div`
     max-width: 375px;
-    background: grey;
     margin: 0 auto;
-    min-height: 100vh;
 `;
