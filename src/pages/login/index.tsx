@@ -1,20 +1,35 @@
 import Layout from 'components/layout/Layout';
-import React from 'react';
+import React, { useState } from 'react';
 import { NextPageWithLayout } from 'pages/_app';
 import styled from '@emotion/styled';
 import Input from 'components/form/Input';
 
 const Login: NextPageWithLayout = () => {
+    const [value, setValue] = useState({ userId: '', userPw: '' });
+
     const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log('dkdkdkdkdk');
     };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setValue((prev) => ({ ...prev, [name]: value }));
+    };
+
     return (
         <LoginForm onSubmit={handleLogin}>
             <Title>모두의 농부</Title>
             <InputWrap>
-                <Input type="text" placeholder="아이디" />
-                <Input type="password" placeholder="비밀번호" />
+                <Input type="text" placeholder="아이디" name="userId" onChange={handleChange} value={value.userId} />
+                <Input
+                    type="password"
+                    placeholder="비밀번호"
+                    name="userPw"
+                    onChange={handleChange}
+                    value={value.userPw}
+                />
             </InputWrap>
             <Button type="submit">로그인</Button>
         </LoginForm>

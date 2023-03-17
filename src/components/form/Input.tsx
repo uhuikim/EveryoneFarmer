@@ -2,13 +2,14 @@ import React from 'react';
 import styled from '@emotion/styled';
 type InputProps = {
     type: string;
+    name?: string;
     placeholder?: string;
     value?: string;
-    onChange?: () => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Input = ({ type, placeholder, value, onChange }: InputProps) => {
-    return <StyledInput type={type} placeholder={placeholder} value={value} onChange={onChange} />;
+const Input = ({ type, placeholder, value, name, onChange }: InputProps) => {
+    return <StyledInput type={type} placeholder={placeholder} name={name} value={value} onChange={onChange} />;
 };
 
 export default Input;
