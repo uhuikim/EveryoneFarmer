@@ -15,7 +15,12 @@ const Home: NextPageWithLayout = () => {
                     <FaRegBell size={18} />
                 </button>
             </Header>
-            <Button>수현짱~~</Button>
+            <p>카메라 1</p>
+            <div>차트</div>
+            <p>카메라 2</p>
+            <div>차트</div>
+            <p>카메라 3</p>
+            <div>차트</div>
         </>
     );
 };

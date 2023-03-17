@@ -5,6 +5,7 @@ import BackHeader from 'components/layout/BackHeader';
 import styled from '@emotion/styled';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useRouter } from 'next/router';
+import { HiOutlineDotsVertical } from 'react-icons/hi';
 
 const MyDevice: NextPageWithLayout = () => {
     const router = useRouter();
@@ -16,6 +17,15 @@ const MyDevice: NextPageWithLayout = () => {
                     <AiOutlinePlus size={18} />
                 </button>
             </Header>
+
+            <ul>
+                <li>
+                    영상 ? / 카메라 1 <HiOutlineDotsVertical />
+                </li>
+                <li>
+                    영상 ? / 카메라 2 <HiOutlineDotsVertical />
+                </li>
+            </ul>
         </div>
     );
 };
