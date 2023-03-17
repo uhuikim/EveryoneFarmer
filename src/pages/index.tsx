@@ -17,8 +17,9 @@ const Home: NextPageWithLayout = () => {
     const [data, setData] = useState([]);
     useEffect(() => {
         (async () => {
-            const res = await getApi('/mo/cctvbrand');
-            setData(res.data.list);
+            await getApi('/mo/cctvbrand')
+                .then((res) => setData(res.data.list))
+                .catch((err) => console.log(err));
         })();
     }, []);
 

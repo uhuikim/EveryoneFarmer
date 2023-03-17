@@ -13,8 +13,9 @@ const MyDevice: NextPageWithLayout = () => {
 
     useEffect(() => {
         (async () => {
-            const res = await getApi('/mo/device');
-            setData(res.data.list);
+            await getApi('/mo/device')
+                .then((res) => setData(res.data.list))
+                .catch((err) => console.log(err));
         })();
     }, []);
 
