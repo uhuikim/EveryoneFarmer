@@ -5,8 +5,25 @@ import Layout from 'components/layout/Layout';
 import { NextPageWithLayout } from 'pages/_app';
 
 import { FaRegBell } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { getApi } from 'api/setup';
 
+type CCTVListType = {
+    cctvBrandCd: string;
+    cctvBrandNm: string;
+    regDt: number;
+};
 const Home: NextPageWithLayout = () => {
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        (async () => {
+            const res = await getApi('/mo/cctvbrand');
+            setData(res.data.list);
+        })();
+    }, []);
+
+    console.log(data);
+
     return (
         <>
             <Header>
@@ -15,12 +32,6 @@ const Home: NextPageWithLayout = () => {
                     <FaRegBell size={18} />
                 </button>
             </Header>
-            <p>카메라 1</p>
-            <div>차트</div>
-            <p>카메라 2</p>
-            <div>차트</div>
-            <p>카메라 3</p>
-            <div>차트</div>
         </>
     );
 };

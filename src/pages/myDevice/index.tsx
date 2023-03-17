@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'components/layout/Layout';
 import { NextPageWithLayout } from 'pages/_app';
 import BackHeader from 'components/layout/BackHeader';
@@ -9,10 +9,16 @@ import { HiOutlineDotsVertical } from 'react-icons/hi';
 import { getApi } from 'api/setup';
 
 const MyDevice: NextPageWithLayout = () => {
+    const [data, setData] = useState([]);
+
     useEffect(() => {
-        const res = getApi('/mo/device');
-        console.log(res);
+        (async () => {
+            const res = await getApi('/mo/device');
+            setData(res.data.list);
+        })();
     }, []);
+
+    console.log(data);
 
     const router = useRouter();
     return (
@@ -41,15 +47,6 @@ MyDevice.getLayout = (page) => {
 };
 
 export default MyDevice;
-
-// localstorage 서버에서 못불러옴
-// export async function getServerSideProps() {
-//     const res = await getApi('/mo/device');
-//     const data = res.data;
-
-//     console.log(data);
-//     return { props: { data } };
-// }
 
 const Header = styled.div`
     position: relative;
