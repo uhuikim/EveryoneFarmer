@@ -26,6 +26,11 @@ export default BottomNav;
 
 const BottomNavList = styled.nav`
     display: flex;
+    position: fixed;
+    bottom: 0;
+    max-width: 375px;
+    width: 100%;
+    background: white;
 `;
 
 const BottomItem = styled(Link)`

@@ -22,6 +22,7 @@ const Container = styled.div`
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    position: relative;
 `;
 
 const Content = styled.div`
