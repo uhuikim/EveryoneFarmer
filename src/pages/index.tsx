@@ -8,51 +8,18 @@ import { FaRegBell } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { getApi } from 'api/setup';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
+import dayjs from 'dayjs';
 
-const test = [
-    {
-        name: 'Page A',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400
-    },
-    {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210
-    },
-    {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290
-    },
-    {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000
-    },
-    {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100
-    }
-];
+interface APIResult {
+    deviceCd: string;
+    deviceNm: string;
+    totalCnt: string;
+
+    graphValueList: Array<{
+        time: string;
+        value: number;
+    }>;
+}
 
 type CCTVListType = {
     cctvBrandCd: string;
@@ -60,16 +27,26 @@ type CCTVListType = {
     regDt: number;
 };
 const Home: NextPageWithLayout = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<Array<APIResult>>([]);
+
     useEffect(() => {
         (async () => {
-            await getApi('/mo/cctvbrand')
-                .then((res) => setData(res.data.list))
+            await getApi<{ list: Array<APIResult> }>('/mo/event')
+                .then((res) => {
+                    setData(
+                        res.list.map((item) => {
+                            return {
+                                ...item,
+                                graphValueList: item.graphValueList.map((value) => {
+                                    return { ...value, time: String(dayjs(value.time).hour()) };
+                                })
+                            };
+                        })
+                    );
+                })
                 .catch((err) => console.log(err));
         })();
     }, []);
-
-    console.log(data);
 
     return (
         <>
@@ -80,57 +57,25 @@ const Home: NextPageWithLayout = () => {
                 </button>
             </Header>
             <Body>
-                <ContentWrapper>
-                    <TitleWrapper>
-                        <CameraName color="lightgreen">카메라 1</CameraName>
-                        <Count>
-                            <span>32회</span>
-                            <span>(24시간 이내)</span>
-                        </Count>
-                    </TitleWrapper>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={test} width={150} height={40} barSize={15}>
-                            <Bar dataKey="uv" fill="#8884d8" />
-                            <XAxis dataKey="pv" />
-                            <YAxis />
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={true} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </ContentWrapper>
-                <ContentWrapper>
-                    <TitleWrapper>
-                        <CameraName color="red">카메라 1</CameraName>
-                        <Count>
-                            <span>32회</span>
-                            <span>(24시간 이내)</span>
-                        </Count>
-                    </TitleWrapper>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={test} width={150} height={40} barSize={15}>
-                            <Bar dataKey="uv" fill="#8884d8" />
-                            <XAxis dataKey="pv" />
-                            <YAxis />
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={true} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </ContentWrapper>
-                <ContentWrapper>
-                    <TitleWrapper>
-                        <CameraName color="lightgreen">카메라 1</CameraName>
-                        <Count>
-                            <span>32회</span>
-                            <span>(24시간 이내)</span>
-                        </Count>
-                    </TitleWrapper>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={test} width={150} height={40} barSize={15}>
-                            <Bar dataKey="uv" fill="#8884d8" />
-                            <XAxis dataKey="pv" />
-                            <YAxis />
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={true} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </ContentWrapper>
+                {data.map((item) => (
+                    <ContentWrapper key={item.deviceNm}>
+                        <TitleWrapper>
+                            <CameraName color="lightgreen">{item.deviceNm}</CameraName>
+                            <Count>
+                                <span>{`${item.totalCnt}회`}</span>
+                                <span>(24시간 이내)</span>
+                            </Count>
+                        </TitleWrapper>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={item.graphValueList} width={150} height={40} barSize={15}>
+                                <Bar dataKey="value" fill="#8884d8" />
+                                <XAxis dataKey="time" />
+                                <YAxis />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={true} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </ContentWrapper>
+                ))}
             </Body>
         </>
     );
