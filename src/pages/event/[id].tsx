@@ -10,6 +10,7 @@ import image3Src from '../../../public/img/image3.jpg';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { getApi } from 'api/setup';
+import dayjs from 'dayjs';
 
 const test = [
     {
@@ -59,7 +60,7 @@ const test = [
 interface GraphResult {
     deviceCd: string;
     deviceNm: string;
-    totalCntL: string;
+    totalCnt: string;
     graphValueList: Array<{
         time: string;
         value: number;
@@ -69,7 +70,7 @@ interface GraphResult {
 interface ImagesResult {
     deviceNm: string;
     cctvLink: string;
-    list: Array<{
+    imgList: Array<{
         time: string;
         diffTime: string;
         preTime: string;
@@ -80,17 +81,22 @@ interface ImagesResult {
 function EventDetail() {
     const router = useRouter();
     const { id } = router.query;
-    console.log(id);
 
     const [graph, setGraph] = useState<GraphResult>();
-    const [images, setImages] = useState();
+    const [images, setImages] = useState<ImagesResult>();
 
     useEffect(() => {
         if (!id) return;
 
         (async () => {
-            await getApi<GraphResult>(`/mo/event/${id}/graph`).then((res) => {
-                console.log(res);
+            await getApi<{ data: GraphResult }>(`/mo/event/${id}/graph`, { page: 0, size: 100 }).then((res) => {
+                setGraph({
+                    ...res.data,
+                    graphValueList: res.data.graphValueList.map((item) => ({
+                        ...item,
+                        time: String(dayjs(item.time).hour())
+                    }))
+                });
             });
         })();
     }, [id]);
@@ -99,63 +105,48 @@ function EventDetail() {
         if (!id) return;
 
         (async () => {
-            await getApi<ImagesResult>(`/mo/event/${id}/images`).then((res) => {
-                console.log(res);
+            await getApi<{ data: ImagesResult }>(`/mo/event/${id}/images`).then((res) => {
+                setImages(res.data);
             });
         })();
     }, [id]);
 
-    if (!id) return null;
+    if (!id || !graph || !images) return null;
 
     return (
         <Layout>
             <>
-                <BackHeader title="카메라 1" />
+                <BackHeader title={graph.deviceNm} />
                 <ChartWrapper>
                     <Count>
-                        <span>32회</span>
+                        <span>{`${graph.totalCnt}회`}</span>
                         <span>(24시간 이내)</span>
                     </Count>
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={test} width={150} height={40} barSize={15}>
-                            <Bar dataKey="uv" fill="#8884d8" />
-                            <XAxis dataKey="pv" />
+                        <BarChart data={graph.graphValueList} width={150} height={40} barSize={15}>
+                            <Bar dataKey="value" fill="#8884d8" />
+                            <XAxis dataKey="time" />
                             <YAxis />
                             <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={true} />
                         </BarChart>
                     </ResponsiveContainer>
                 </ChartWrapper>
                 <List>
-                    <Item>
-                        <p>06-24 12:15(40분전)</p>
-                        <div>
-                            <Image alt="img/image2.png" src={image2Src} fill style={{ objectFit: 'fill' }} />
-                        </div>
-                    </Item>
-                    <Item>
-                        <p>06-24 12:15(40분전)</p>
-                        <div>
-                            <Image alt="img/image2.png" src={image2Src} fill style={{ objectFit: 'fill' }} />
-                        </div>
-                    </Item>
-                    <Item>
-                        <p>06-24 12:15(40분전)</p>
-                        <div>
-                            <Image alt="img/image2.png" src={image2Src} fill style={{ objectFit: 'fill' }} />
-                        </div>
-                    </Item>
-                    <Item>
-                        <p>06-24 12:15(40분전)</p>
-                        <div>
-                            <Image alt="img/image2.png" src={image2Src} fill style={{ objectFit: 'fill' }} />
-                        </div>
-                    </Item>
-                    <Item>
-                        <p>06-24 12:15(40분전)</p>
-                        <div>
-                            <Image alt="img/image2.png" src={image2Src} fill style={{ objectFit: 'fill' }} />
-                        </div>
-                    </Item>
+                    {images.imgList.map((item) => {
+                        return (
+                            <Item key={item.diffTime}>
+                                <p>{item.time}</p>
+                                <div>
+                                    <Image
+                                        src={`http://monong.de:8205/mo/event/image?path=${item.imgLink}`}
+                                        fill
+                                        style={{ objectFit: 'fill' }}
+                                        alt="test"
+                                    />
+                                </div>
+                            </Item>
+                        );
+                    })}
                 </List>
             </>
         </Layout>
