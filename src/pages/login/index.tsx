@@ -17,7 +17,10 @@ const Login = () => {
             .then((res) => {
                 if (res.data.message === 'SUCCESS') {
                     const access_token = res.data.data['MO-MNG-TOKEN'];
+                    const userIdx = res.data.data['idx'];
                     localStorage.setItem('monong_access_token', access_token);
+                    localStorage.setItem('userIdx', userIdx);
+
                     router.push('/');
                 }
                 if (res.data.message === 'FAIL_ACCESS_NO_USER_OR_PASSWORD') console.log('없는 아이디 비번');
