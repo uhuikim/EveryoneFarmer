@@ -4,9 +4,12 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 
 import { FaRegBell } from 'react-icons/fa';
 import BackHeader from 'components/layout/BackHeader';
 import Image from 'next/image';
-import image1Src from '../../../public/img/image1.png';
-import image2Src from '../../../public/img/image2.png';
-import image3Src from '../../../public/img/image3.png';
+import image1Src from '../../../public/img/image1.jpg';
+import image2Src from '../../../public/img/image2.jpg';
+import image3Src from '../../../public/img/image3.jpg';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
+import { getApi } from 'api/setup';
 
 const test = [
     {
@@ -53,7 +56,57 @@ const test = [
     }
 ];
 
+interface GraphResult {
+    deviceCd: string;
+    deviceNm: string;
+    totalCntL: string;
+    graphValueList: Array<{
+        time: string;
+        value: number;
+    }>;
+}
+
+interface ImagesResult {
+    deviceNm: string;
+    cctvLink: string;
+    list: Array<{
+        time: string;
+        diffTime: string;
+        preTime: string;
+        imgLink: string;
+    }>;
+}
+
 function EventDetail() {
+    const router = useRouter();
+    const { id } = router.query;
+    console.log(id);
+
+    const [graph, setGraph] = useState<GraphResult>();
+    const [images, setImages] = useState();
+
+    useEffect(() => {
+        if (!id) return;
+
+        (async () => {
+            await getApi<GraphResult>(`/mo/event/${id}/graph`).then((res) => {
+                console.log(res);
+            });
+        })();
+    }, [id]);
+
+    useEffect(() => {
+        if (!id) return;
+
+        (async () => {
+            await getApi<ImagesResult>(`/mo/event/${id}/images`).then((res) => {
+                console.log(res);
+            });
+        })();
+    }, [id]);
+
+    if (!id) return null;
+
     return (
         <Layout>
             <>

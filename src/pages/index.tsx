@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { getApi } from 'api/setup';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
 
 interface APIResult {
     deviceCd: string;
@@ -48,6 +49,8 @@ const Home: NextPageWithLayout = () => {
         })();
     }, []);
 
+    const router = useRouter();
+
     return (
         <>
             <Header>
@@ -58,7 +61,12 @@ const Home: NextPageWithLayout = () => {
             </Header>
             <Body>
                 {data.map((item) => (
-                    <ContentWrapper key={item.deviceNm}>
+                    <ContentWrapper
+                        key={item.deviceNm}
+                        onClick={() => {
+                            router.push(`/event/${item.deviceCd}`);
+                        }}
+                    >
                         <TitleWrapper>
                             <CameraName color="lightgreen">{item.deviceNm}</CameraName>
                             <Count>
