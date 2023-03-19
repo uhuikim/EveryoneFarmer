@@ -9,22 +9,38 @@ import { HiOutlineDotsVertical } from 'react-icons/hi';
 import { getApi } from 'api/setup';
 import Image from 'next/image';
 
-import image1Src from '../../../public/img/image1.png';
-import image2Src from '../../../public/img/image2.png';
-import image3Src from '../../../public/img/image3.png';
+import image1Src from '../../../public/img/image1.jpg';
+import image2Src from '../../../public/img/image2.jpg';
+import image3Src from '../../../public/img/image3.jpg';
+import image4Src from '../../../public/img/image4.jpg';
+
+const IMAGE = [image1Src, image2Src, image3Src, image4Src]
+
+
+interface DeviceResult {
+    description: string;
+    deviceAccId: string;
+    deviceCd: string;
+    deviceIp: string;
+    deviceNm: string;
+    devicePort: string;
+    deviceStatus: number;
+    idx: number;
+    regDt: number;
+    regUsrNm: string;
+    userIdx: number;
+}
 
 const MyDevice: NextPageWithLayout = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<Array<DeviceResult>>([]);
 
     useEffect(() => {
         (async () => {
-            await getApi('/mo/device')
-                .then((res) => setData(res.data.list))
+            await getApi<{ list: Array<DeviceResult> }>('/mo/device')
+                .then((res) => setData(res.list))
                 .catch((err) => console.log(err));
         })();
     }, []);
-
-    console.log(data);
 
     const router = useRouter();
     return (
@@ -37,54 +53,22 @@ const MyDevice: NextPageWithLayout = () => {
             </Header>
 
             <UnorderedList>
-                <li>
-                    <ItemWrapper>
-                        <CameraImage status="connected">
-                            <div>연결</div>
-                            <Image alt="img/image1.png" src={image1Src} width={150} height={100} />
-                        </CameraImage>
-                        <CameraName>카메라 1</CameraName>
-                        <Icon>
-                            <HiOutlineDotsVertical />
-                        </Icon>
-                    </ItemWrapper>
-                </li>
-                <li>
-                    <ItemWrapper>
-                        <CameraImage status="disconnected">
-                            <div>미연결</div>
-                            <Image alt="img/image2.png" src={image2Src} width={150} height={100} />
-                        </CameraImage>
-                        <CameraName>카메라 2</CameraName>
-                        <Icon>
-                            <HiOutlineDotsVertical />
-                        </Icon>
-                    </ItemWrapper>
-                </li>
-                <li>
-                    <ItemWrapper>
-                        <CameraImage status="connected">
-                            <div>연결</div>
-                            <Image alt="img/image3.png" src={image3Src} width={150} height={100} />
-                        </CameraImage>
-                        <CameraName>카메라 3</CameraName>
-                        <Icon>
-                            <HiOutlineDotsVertical />
-                        </Icon>
-                    </ItemWrapper>
-                </li>
-                <li>
-                    <ItemWrapper>
-                        <CameraImage status="unknown">
-                            <div>수정필요</div>
-                            <Image alt="img/image1.png" src={image1Src} width={150} height={100} />
-                        </CameraImage>
-                        <CameraName>카메라 4</CameraName>
-                        <Icon>
-                            <HiOutlineDotsVertical />
-                        </Icon>
-                    </ItemWrapper>
-                </li>
+                {data.map((item, index) => {
+                    return (
+                        <li key={item.deviceCd}>
+                            <ItemWrapper>
+                                <CameraImage status={item.deviceStatus === 0 ? "connected" : "disconnected"}>
+                                    <div>{item.deviceStatus === 0 ? '연결' : '미연결'}</div>
+                                    <Image alt="img/image1.png" src={IMAGE[index]} width={150} height={100} />
+                                </CameraImage>
+                                <CameraName>{item.deviceNm}</CameraName>
+                                <Icon>
+                                    <HiOutlineDotsVertical />
+                                </Icon>
+                            </ItemWrapper>
+                        </li>
+                    );
+                })}
             </UnorderedList>
         </div>
     );
@@ -122,7 +106,7 @@ const CameraImage = styled.div<{ status: 'connected' | 'disconnected' | 'unknown
         display: flex;
         align-items: center;
         left: 15px;
-        color: black;
+        color: white;
         font-weight: bold;
         font-size: 12px;
         &::before {
@@ -142,7 +126,9 @@ const CameraImage = styled.div<{ status: 'connected' | 'disconnected' | 'unknown
     }
 `;
 
-const CameraName = styled.div``;
+const CameraName = styled.div`
+margin-left: 10px;
+`;
 
 const Icon = styled.div`
     margin-left: auto;

@@ -10,9 +10,10 @@ instance.interceptors.request.use(async (config) => {
     return config;
 });
 
-export const getApi = async (url: string, params = {}) => {
+export const getApi = async <R>(url: string, params = {}): Promise<R> => {
     const result = await instance.get(url, { params });
-    return result;
+
+    return result.data;
 };
 
 export const postApi = async (url: string, body = {}) => {
