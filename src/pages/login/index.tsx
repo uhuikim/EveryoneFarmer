@@ -23,7 +23,7 @@ const Login = () => {
 
                     router.push('/');
                 }
-                if (res.data.message === 'FAIL_ACCESS_NO_USER_OR_PASSWORD') console.log('없는 아이디 비번');
+                if (res.data.message === 'FAIL_ACCESS_NO_USER_OR_PASSWORD') alert('없는 아이디 비번');
             })
             .catch((Error) => {
                 console.log(Error);
