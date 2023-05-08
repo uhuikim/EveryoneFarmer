@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import { getApi } from 'api/setup';
 import Image from 'next/image';
+import Modal from 'react-modal';
 
 import image1Src from '../../../public/img/image1.jpg';
 import image2Src from '../../../public/img/image2.jpg';
@@ -42,6 +43,7 @@ const MyDevice: NextPageWithLayout = () => {
         })();
     }, []);
 
+    const [getModalState, setModalState] = useState(() => false);
     const router = useRouter();
     return (
         <div>
@@ -59,7 +61,13 @@ const MyDevice: NextPageWithLayout = () => {
                             <ItemWrapper>
                                 <CameraImage status={item.deviceStatus === 0 ? "connected" : "disconnected"}>
                                     <div>{item.deviceStatus === 0 ? '연결' : '미연결'}</div>
-                                    <Image alt="img/image1.png" src={IMAGE[index]} width={150} height={100} />
+                                    <Image onClick={() => { setModalState(true)} } alt="img/image1.png" src={IMAGE[index]} width={150} height={100} />
+                                    <Modal 
+                                        isOpen={getModalState} 
+                                        style={ModalStyle} 
+                                        ariaHideApp={false}>
+                                            <Image onClick={() => setModalState(false)} alt="img/image1.png" src={IMAGE[index]} width={200} height={150}/>
+                                    </Modal>                                
                                 </CameraImage>
                                 <CameraName>{item.deviceNm}</CameraName>
                                 <Icon>
@@ -73,6 +81,7 @@ const MyDevice: NextPageWithLayout = () => {
         </div>
     );
 };
+
 
 MyDevice.getLayout = (page) => {
     return <Layout>{page}</Layout>;
@@ -139,3 +148,22 @@ const UnorderedList = styled.ul`
     flex-direction: column;
     gap: 20px;
 `;
+
+const ModalStyle = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0)'
+      },
+    content: {
+        top: '20%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-60%',
+        transform: 'translate(-50%, -50%)',
+    }
+}
